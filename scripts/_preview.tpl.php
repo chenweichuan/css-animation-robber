@@ -1,7 +1,7 @@
 <style>
     <?php
         foreach ($keyframes as $k_v) {
-            echo implode(' ', $k_v);
+            echo implode('', $k_v);
         }
     ?>
     <?php
@@ -25,10 +25,8 @@
             <div class="preview-animation-element">
                 <div class="<?php echo $_class_name; ?> <?php echo (strpos($g_v,'infinite')?'':'not-infinite'); ?>" style="color:<?php echo $animation_colors[$count % count($animation_colors)]; ?>;height:100%;padding:0;margin:0 auto;"><?php echo $name; ?></div>
             </div>
-            <textarea class="preview-animation-code">
-.<?php echo $_class_name; ?><?php echo $g_v; ?>
-<?php echo implode(' ', $keyframes[$name]); ?>
-            </textarea>
+            <textarea class="preview-animation-code">.<?php echo $_class_name; ?><?php echo $g_v; ?>
+<?php echo implode('', $keyframes[$name]); ?></textarea>
         </div>
         <?php ++ $count; ?>
     <?php } ?>
