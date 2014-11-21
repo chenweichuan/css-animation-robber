@@ -1,5 +1,11 @@
 <?php
-include_once './dependents/simple_html_dom.php';
+/**
+ * Licensed under The MIT License
+ * Redistributions of files must retain the this copyright notice.
+ *
+ * @author Weichuan Chen <stream_26@sina.com>
+ * @version 1.0
+ */
 
 class CssAnimationRobber
 {
@@ -49,7 +55,7 @@ class CssAnimationRobber
 
         // 提取keyframes
         $keyframes = array();
-        preg_match_all('/(@[^@\{\}]*keyframes\s+([^\{\}\s]+)\s*\{(?:[^\{\}]+\{[^\{\}]*\})+\})/', $css, $keyframes_match, PREG_PATTERN_ORDER);
+        preg_match_all('/(@[^@\{\}\s]*keyframes\s+([^\{\}\s]+)\s*\{(?:[^\{\}]+\{[^\{\}]*\}\s*)+\})/', $css, $keyframes_match, PREG_PATTERN_ORDER);
         foreach ($keyframes_match[1] as $k_m_k => $k_m_v) {
             $keyframes[$keyframes_match[2][$k_m_k]][] = $k_m_v;
         }

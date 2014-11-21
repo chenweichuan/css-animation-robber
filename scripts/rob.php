@@ -2,6 +2,7 @@
 
 set_time_limit(60);
 
+include_once './dependents/simple_html_dom.php';
 include_once './CssAnimationRobber.php';
 
 $url  = isset($_REQUEST['url']) ? (string) $_REQUEST['url'] : NULL;
