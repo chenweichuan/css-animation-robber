@@ -20,6 +20,9 @@
         .clearfix:after {
             clear: both;
         }
+        .hide {
+            display: none;
+        }
         .well > div {
             margin:10px;
         }
@@ -95,22 +98,22 @@
             } ) : ( alert( "请输入HTML5地址" ), $btn.attr( "disabled", false ).val( btnText ) );
         } );
         var autoRefreshTimer,
+            fRefresh = function() {
+                $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).addClass( "hide" );
+                setTimeout( function() {
+                    $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).removeClass( "hide" );
+                }, 100 );
+            },
             initAutoRefresh = function() {
                 autoTimer = setInterval( function() {
-                    $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).hide();
-                    setTimeout( function() {
-                        $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).show();
-                    }, 100 );
+                    fRefresh();
                 }, 8000 );
             };
         $( ".js-refresh-btn" ).click( function() {
             var $btn  = $( this );
             clearInterval( autoRefreshTimer );
             $btn.attr( "disabled", true );
-            $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).hide();
-            setTimeout( function() {
-                $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).show();
-            }, 100 );
+            fRefresh();
             setTimeout( function() {
                 $btn.attr( "disabled", false );
             }, 2000 );
