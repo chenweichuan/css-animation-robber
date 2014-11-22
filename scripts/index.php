@@ -120,7 +120,7 @@
         <div class="clearfix preview-form">
             <label class="pull-left preview-field-url"><span style="color:red;">*</span>&nbsp;HTML5地址</label>
             <div class="pull-left preview-input-url">
-                <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL"/>
+                <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL" autocomplete="on"/>
             </div>
             <div class="pull-left preview-submit-btn">
                 <input id="submit" type="button" value="提取CSS"/>

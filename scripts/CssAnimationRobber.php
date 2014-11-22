@@ -15,18 +15,19 @@ class CssAnimationRobber
     public function getCss($url)
     {
         $html = self::getRemoteContents($url, self::USER_AGENT_IOS);
-        $dom  = self::buildDom($html);
 
-        $style_dom = $dom->find('style');
-        $link_dom  = $dom->find('link');
+        preg_match_all('/<style[^<>]*>([^<>]+)<\/style>/', $html, $style_areas, PREG_PATTERN_ORDER);
+        $style_areas = $style_areas[1];
+        preg_match_all('/<link[^<>]+href=[\'"]([^<>\'"]+)[\'"][^<>]*>/i', $html, $css_links, PREG_PATTERN_ORDER);
+        $css_links = $css_links[1];
 
         // 提取css
         $css = '';
-        foreach ($style_dom as $s_d_v) {
-            $css .= $s_d_v->plaintext;
+        foreach ($style_areas as $s_a_v) {
+            $css .= $s_a_v;
         }
-        foreach ($link_dom as $l_d_v) {
-            $_url = $l_d_v->href;
+        foreach ($css_links as $c_l_v) {
+            $_url = $c_l_v;
             if (0 === strpos($_url, 'http://')) {
                 // do nothing
             } else if (0 === strpos($_url, '/')) {
@@ -100,16 +101,6 @@ class CssAnimationRobber
         }
 
         return $html;
-    }
-
-    static public function buildDom($html)
-    {
-        $html = (string) $html;
-
-        $dom = new simple_html_dom();
-        $dom->load($html, true);
-
-        return $dom;
     }
 
     static public function formatCssBlock($css, $level = 0)
