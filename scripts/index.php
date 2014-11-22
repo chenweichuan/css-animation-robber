@@ -84,7 +84,6 @@
     <script>
         $( ".js-submit-btn" ).click( function() {
             var $btn  = $( this ),
-                $btns = $( ".js-submit-btn" ),
                 btnText = $btn.val(),
                 loadingText = "分析提取ing...",
                 url = $( "#url" ).val();
@@ -105,22 +104,25 @@
                     $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).removeClass( "hide" );
                 }, 100 );
             },
-            initAutoRefresh = function() {
+            startAutoRefresh = function() {
                 autoRefreshTimer = setInterval( function() {
                     fRefresh();
                 }, 8000 );
+            },
+            stopAutoRefresh = function() {
+                clearInterval( autoRefreshTimer );
             };
         $( ".js-refresh-btn" ).click( function() {
             var $btn  = $( this );
-            clearInterval( autoRefreshTimer );
             $btn.attr( "disabled", true );
+            stopAutoRefresh();
             fRefresh();
-            initAutoRefresh();
+            startAutoRefresh();
             setTimeout( function() {
                 $btn.attr( "disabled", false );
             }, 2000 );
         } );
-        initAutoRefresh();
+        startAutoRefresh();
     </script>
   </body>
 </html>
