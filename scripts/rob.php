@@ -6,10 +6,12 @@ include_once './dependents/simple_html_dom.php';
 include_once './CssAnimationRobber.php';
 
 $url  = isset($_REQUEST['url']) ? (string) $_REQUEST['url'] : NULL;
+$css_links = isset($_REQUEST['css_links']) ? (string) $_REQUEST['css_links'] : NULL;
+$html  = isset($_REQUEST['html']) ? (string) $_REQUEST['html'] : NULL;
 
 $css_animation_robber = new CssAnimationRobber();
 
-$preview_html = fetch('./_preview.tpl.php', $css_animation_robber->getCss($url));
+$preview_html = fetch('./_preview.tpl.php', $css_animation_robber->getAnimationCss($url, $css_links, $html));
 
 $return = array();
 $return['status'] = 1;

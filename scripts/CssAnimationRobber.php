@@ -12,14 +12,20 @@ class CssAnimationRobber
     const USER_AGENT_CHROME = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36';
     const USER_AGENT_IOS    = 'Mozilla/5.0 (iOS; U; zh-Hans) AppleWebKit/533.19.4 (KHTML, like Gecko) AdobeAIR/4.0';
 
-    public function getCss($url)
+    public function getAnimationCss($url = NULL, $css_links = NULL, $html = NULL)
     {
-        $html = self::getRemoteContents($url, self::USER_AGENT_IOS);
+        $url = (string) $url;
+        $css_links = array_filter(is_array($css_links) ? $css_links : explode(',', preg_replace('/\s/', '', (string) $css_links)));
+        $html = (string) $html;
 
-        preg_match_all('/<style[^<>]*>([^<>]+)<\/style>/', $html, $style_areas, PREG_PATTERN_ORDER);
-        $style_areas = $style_areas[1];
-        preg_match_all('/<link[^<>]+href=[\'"]([^<>\'"]+)[\'"][^<>]*>/i', $html, $css_links, PREG_PATTERN_ORDER);
-        $css_links = $css_links[1];
+        $html .= $url ? self::getRemoteContents($url, self::USER_AGENT_IOS) : '';
+        $style_areas = array();
+        if ($html) {
+            preg_match_all('/<style[^<>]*>([^<>]+)<\/style>/', $html, $style_areas_match, PREG_PATTERN_ORDER);
+            $style_areas = $style_areas_match[1];
+            preg_match_all('/<link[^<>]+href=[\'"]([^<>\'"]+)[\'"][^<>]*>/i', $html, $css_links_match, PREG_PATTERN_ORDER);
+            $css_links = array_merge($css_links, $css_links_match[1]);
+        }
 
         // 提取css
         $css = '';
@@ -72,35 +78,31 @@ class CssAnimationRobber
             $animations[$animations_match[2][$a_m_k]][] = self::formatCssBlock($a_m_v);
         }
 
+        // 没找到匹配的class 的keyframes 使用默认的class
+        foreach ($keyframes as $k_k => $k_v) {
+            empty($animations[$k_k]) && ($animations[$k_k][] = self::getDefaultCssAnimationBlock($k_k, $k_v));
+        }
+        
+
         return array(
             'keyframes'  => $keyframes,
             'animations' => $animations,
         );
     }
 
-    static public function getRemoteContents($url, $user_agent = NULL)
+    static public function getDefaultCssAnimationBlock($keyframes_name, $keyframes_blocks)
     {
-        $url = trim((string) $url);
-        if (empty($url)) {
-            return '';
-        }
+        $css = "";
+        $css .= "{\n";
+        $css .= strpos($keyframes_blocks[0], 'opacity') ? "    opacity: 0;\n" : "";
+        $css .= "    -webkit-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
+        $css .= "    -moz-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
+        $css .= "    -moz-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
+        $css .= "    -o-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
+        $css .= "    animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
+        $css .= "}\n\n";
 
-        for ( $i = 0, $l = 3; $i < $l; ++ $i ) {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-            $user_agent && curl_setopt($curl, CURLOPT_USERAGENT, $user_agent ? $user_agent : self::USER_AGENT_CHROME);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 5);
-            $html = trim(curl_exec($curl));
-            curl_close($curl);
-            if ($html) {
-                break;
-            }
-        }
-
-        return $html;
+        return $css;
     }
 
     static public function formatCssBlock($css, $level = 0)
@@ -129,5 +131,30 @@ class CssAnimationRobber
         }
 
         return $css;
+    }
+
+    static public function getRemoteContents($url, $user_agent = NULL)
+    {
+        $url = trim((string) $url);
+        if (empty($url)) {
+            return '';
+        }
+
+        for ( $i = 0, $l = 3; $i < $l; ++ $i ) {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            $user_agent && curl_setopt($curl, CURLOPT_USERAGENT, $user_agent ? $user_agent : self::USER_AGENT_CHROME);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 5);
+            $html = trim(curl_exec($curl));
+            curl_close($curl);
+            if ($html) {
+                break;
+            }
+        }
+
+        return $html;
     }
 }

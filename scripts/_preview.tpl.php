@@ -31,3 +31,5 @@
         <?php ++ $count; ?>
     <?php } ?>
 <?php } ?>
+
+<?php empty($animations) && print('<div style="width:100%;text-align:center;color:red;padding:5%% 0;">没抓取到任何动效</div>'); ?>

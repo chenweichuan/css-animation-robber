@@ -20,6 +20,9 @@
         .clearfix:after {
             clear: both;
         }
+        .clearfix {
+            clear: both;
+        }
         .pull-left {
             float: left;
         }
@@ -35,17 +38,23 @@
             position: relative;
             z-index: 999;
         }
-        .preview-form .preview-field-url {
-            height: 100%;
+        .preview-form .preview-field {
+            width: 130px;
         }
-        .preview-form .preview-input-url {
+        .preview-form .preview-input {
             width: 60%;
-            height: 100%;
         }
-        .preview-form .preview-input-url input {
+        .preview-form .preview-input input {
             width: 100%;
-            height: 100%;
+            height: 20px;
             padding:0 5px;
+            margin:0 0 0 10px;
+            outline: none;
+        }
+        .preview-form .preview-input textarea {
+            width: 100%;
+            height: 60px;
+            padding:0 6px;
             margin:0 0 0 10px;
             outline: none;
         }
@@ -73,8 +82,6 @@
         }
         .preview-animation-item .preview-animation-area .preview-animation-element {
             display: inline-block;
-            width: 170px;
-            height: 170px;
             line-height: 170px;
             font-size: 1em;
             text-align: center;
@@ -84,9 +91,9 @@
             background-position: center center;
             position: absolute;
             top:auto;
-            right: auto;
+            right: 0;
             bottom: auto;
-            left: auto;
+            left: 0;
             z-index: auto;
         }
         .preview-animation-item .preview-animation-code {
@@ -118,9 +125,19 @@
         <br/>
 
         <div class="clearfix preview-form">
-            <label class="pull-left preview-field-url"><span style="color:red;">*</span>&nbsp;HTML5地址</label>
-            <div class="pull-left preview-input-url">
+            <label class="pull-left preview-field preview-field-url"><span style="color:red;">*</span>&nbsp;HTML5 URL</label>
+            <div class="pull-left preview-input preview-input-url">
                 <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL" autocomplete="on"/>
+            </div>
+            <div class="clearfix"></div>
+            <label class="pull-left preview-field preview-field-css-links">&nbsp;CSS URL</label>
+            <div class="pull-left preview-input preview-input-css-links">
+                <input id="css-links" type="text" name="css_links" value="" placeholder="请输入CSS URL" autocomplete="on"/>
+            </div>
+            <div class="clearfix"></div>
+            <label class="pull-left preview-field preview-field-html">&nbsp;含CSS 的HTML</label>
+            <div class="pull-left preview-input preview-input-html">
+                <textarea id="html" name="html" placeholder="请输入HTML" autocomplete="off"></textarea>
             </div>
             <div class="pull-left preview-submit-btn">
                 <input id="submit" type="button" value="提取CSS"/>
@@ -146,15 +163,22 @@
                 return -1 === href.indexOf( "#" ) ? "" : decodeURIComponent( href.split( "#" )[1] );
             }
             // get animations
-            function getHtml( url ) {
+            function getHtml() {
                 var $btn = $( "#submit" ),
                     btnText = $btn.val(),
-                    loadingText = "分析提取ing...";
+                    loadingText = "分析提取ing...",
+                    url = $( "#url" ).val().replace( /^\s+|\s+$/, "" ),
+                    cssLinks = $( "#css-links" ).val().replace( /^\s+|\s+$/, "" ),
+                    html = $( "#html" ).val().replace( /^\s+|\s+$/, "" );
                 if ( $btn.attr( "disabled" ) ) {
                     return ;
                 }
                 $btn.attr( "disabled", true ).val( loadingText );
-                url && $.getJSON( "rob.php", { url: url }, function( res ) {
+                if (! url && ! cssLinks && ! html) {
+                    alert( "请填写要抓取的内容" );
+                    return;
+                }
+                url && $.getJSON( "rob.php", { url: url, css_links: cssLinks, html: html }, function( res ) {
                     if ( res.status ) {
                         $( "#preview" ).html( res.info );
                     } else {
@@ -166,12 +190,14 @@
             // manual btn
             $( "#submit" ).click( function() {
                 var url = $( "#url" ).val();
-                url ? ( getHtml( url ), setUrlToHash( url ) ) : alert( "请输入HTML5地址" );
+                url && setUrlToHash( url );
+                getHtml();
+                url ? ( setUrlToHash( url ), getHtml() ) : alert( "请输入HTML5地址" );
             } );
             // hashchange
             $( window ).bind( "hashchange", function() {
                 var url = getUrlFromHash();
-                url && ( getHtml( url ), $( "#url" ).val( url ) );
+                url && ( $( "#url" ).val( url ), getHtml() );
             } ).trigger( "hashchange" );
 
             // auto refresh not-infinite animation
