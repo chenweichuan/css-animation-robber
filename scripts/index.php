@@ -125,7 +125,7 @@
         <br/>
 
         <div class="clearfix preview-form">
-            <label class="pull-left preview-field preview-field-url"><span style="color:red;">*</span>&nbsp;HTML5 URL</label>
+            <label class="pull-left preview-field preview-field-url">&nbsp;HTML5 URL</label>
             <div class="pull-left preview-input preview-input-url">
                 <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL" autocomplete="on"/>
             </div>
@@ -134,11 +134,11 @@
             <div class="pull-left preview-input preview-input-css-links">
                 <input id="css-links" type="text" name="css_links" value="" placeholder="请输入CSS URL" autocomplete="on"/>
             </div>
-            <div class="clearfix"></div>
+            <!-- <div class="clearfix"></div>
             <label class="pull-left preview-field preview-field-html">&nbsp;含CSS 的HTML</label>
             <div class="pull-left preview-input preview-input-html">
                 <textarea id="html" name="html" placeholder="请输入HTML" autocomplete="off"></textarea>
-            </div>
+            </div> -->
             <div class="pull-left preview-submit-btn">
                 <input id="submit" type="button" value="提取CSS"/>
             </div>
@@ -167,9 +167,9 @@
                 var $btn = $( "#submit" ),
                     btnText = $btn.val(),
                     loadingText = "分析提取ing...",
-                    url = $( "#url" ).val().replace( /^\s+|\s+$/, "" ),
-                    cssLinks = $( "#css-links" ).val().replace( /^\s+|\s+$/, "" ),
-                    html = $( "#html" ).val().replace( /^\s+|\s+$/, "" );
+                    url = ( $( "#url" ).val() || "" ).replace( /^\s+|\s+$/, "" ),
+                    cssLinks = ( $( "#css-links" ).val() || "" ).replace( /^\s+|\s+$/, "" ),
+                    html = ( $( "#html" ).val() || "" ).replace( /^\s+|\s+$/, "" );
                 if ( $btn.attr( "disabled" ) ) {
                     return ;
                 }
@@ -178,7 +178,7 @@
                     alert( "请填写要抓取的内容" );
                     return;
                 }
-                url && $.getJSON( "rob.php", { url: url, css_links: cssLinks, html: html }, function( res ) {
+                $.getJSON( "rob.php", { url: url, css_links: cssLinks, html: html }, function( res ) {
                     if ( res.status ) {
                         $( "#preview" ).html( res.info );
                     } else {
@@ -192,7 +192,6 @@
                 var url = $( "#url" ).val();
                 url && setUrlToHash( url );
                 getHtml();
-                url ? ( setUrlToHash( url ), getHtml() ) : alert( "请输入HTML5地址" );
             } );
             // hashchange
             $( window ).bind( "hashchange", function() {
