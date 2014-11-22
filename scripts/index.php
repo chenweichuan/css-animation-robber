@@ -99,25 +99,25 @@
         } );
         var autoRefreshTimer,
             fRefresh = function() {
+                stopAutoRefresh();
                 $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).addClass( "hide" );
                 setTimeout( function() {
                     $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).removeClass( "hide" );
+                    startAutoRefresh();
                 }, 100 );
             },
             startAutoRefresh = function() {
-                autoRefreshTimer = setInterval( function() {
+                autoRefreshTimer = setTimeout( function() {
                     fRefresh();
                 }, 8000 );
             },
             stopAutoRefresh = function() {
-                clearInterval( autoRefreshTimer );
+                clearTimeout( autoRefreshTimer );
             };
         $( ".js-refresh-btn" ).click( function() {
             var $btn  = $( this );
             $btn.attr( "disabled", true );
-            stopAutoRefresh();
             fRefresh();
-            startAutoRefresh();
             setTimeout( function() {
                 $btn.attr( "disabled", false );
             }, 2000 );
