@@ -21,14 +21,12 @@ class CssAnimationRobber
         $html .= $url ? self::getRemoteContents($url, self::USER_AGENT_IOS) : '';
         $style_areas = array();
         if ($html) {
-            preg_match_all('/<style[^<>]*>([^<>]+)<\/style>/', $html, $style_areas_match, PREG_PATTERN_ORDER);
-            $style_areas = $style_areas_match[1];
             preg_match_all('/<link[^<>]+href=[\'"]([^<>\'"]+)[\'"][^<>]*>/i', $html, $css_links_match, PREG_PATTERN_ORDER);
             $css_links = array_merge($css_links, $css_links_match[1]);
         }
 
-        // 提取css
-        $css = '';
+        // 聚合所有含有css 的资源
+        $css = $html;
         foreach ($style_areas as $s_a_v) {
             $css .= $s_a_v;
         }
