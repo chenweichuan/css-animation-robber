@@ -27,21 +27,22 @@
             margin:10px;
         }
         .preview-animation-item {
-            width: 200px;
-            height: 240px;
             margin:10px;
             float: left;
-            overflow: hidden;
         }
         .preview-animation-item .preview-animation-element {
+            width: 200px;
             height: 170px;
             line-height: 170px;
             text-align: center;
             white-space:nowrap;
         }
         .preview-animation-item .preview-animation-code {
-            width: 100%;
-            height:50px;
+            width: 196px;
+            height:68px;
+            margin:0 2px;
+            padding:0;
+            border:none;
             overflow: hidden;
         }
         .refresh-btn {
