@@ -29,32 +29,38 @@
         .well > div {
             margin:10px;
         }
-        .preview-url-form {
+        .preview-form {
             width: 100%;
             height: 20px;
+            position: relative;
+            z-index: 999;
         }
-        .preview-url-form .preview-field-url {
+        .preview-form .preview-field-url {
             height: 100%;
         }
-        .preview-url-form .preview-input-url {
+        .preview-form .preview-input-url {
             width: 60%;
             height: 100%;
         }
-        .preview-url-form .preview-input-url input {
+        .preview-form .preview-input-url input {
             width: 100%;
             height: 100%;
             padding:0 5px;
             margin:0 0 0 10px;
             outline: none;
         }
-        .preview-url-form .preview-submit-btn {
+        .preview-form .preview-submit-btn {
             height: 100%;
         }
-        .preview-url-form .preview-submit-btn input {
+        .preview-form .preview-submit-btn input {
             height: 100%;
             padding:0;
             margin:0 0 0 30px;
             outline: none;
+        }
+        .preview-animation-list {
+            position: relative;
+            z-index: 99;
         }
         .preview-animation-item {
             margin:10px;
@@ -76,11 +82,12 @@
             overflow: hidden;
         }
         .preview-refresh-btn {
+            color: #dd0000;
+            font-size:30px;
             position: fixed;
             top:50px;
             right:20px;
-            font-size:30px;
-            color: #dd0000;
+            z-index: 9999;
         }
     </style>
 
@@ -94,7 +101,7 @@
 
         <br/>
 
-        <div class="clearfix preview-url-form">
+        <div class="clearfix preview-form">
             <label class="pull-left preview-field-url"><span style="color:red;">*</span>&nbsp;HTML5地址</label>
             <div class="pull-left preview-input-url">
                 <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL"/>
@@ -106,7 +113,7 @@
 
         <br/>
 
-        <div id="preview" class="clearfix preview"></div>
+        <div id="preview" class="clearfix preview-animation-list"></div>
     </div>
 
     <input class="preview-refresh-btn js-refresh-btn" type="button" value="刷新动画"/>
