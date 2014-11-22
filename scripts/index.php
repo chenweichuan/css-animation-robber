@@ -115,6 +115,7 @@
             clearInterval( autoRefreshTimer );
             $btn.attr( "disabled", true );
             fRefresh();
+            initAutoRefresh();
             setTimeout( function() {
                 $btn.attr( "disabled", false );
             }, 2000 );
