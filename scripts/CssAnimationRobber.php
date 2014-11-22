@@ -52,6 +52,9 @@ class CssAnimationRobber
 
         // 去除换行
         $css = preg_replace("/[\n\r]/", '', $css);
+        // 去除注释
+        $css = preg_replace('/\/\*.*?\*\//', '', $css);
+        $css = preg_replace('/\/\*|\*\//', '', $css);
 
         // 提取keyframes
         $keyframes = array();
@@ -62,9 +65,9 @@ class CssAnimationRobber
 
         // 提取animation
         $animations = array();
-        $css = preg_replace('/position\s*\:\s*[a-z]+\s*;/', '', $css);
         preg_match_all('/[\.#][^\{\}]+\s*(\{[^\{\}]*animation\s*\:\s*([^\{\}\s]+)\s+[\{\}]*[^\{\}]+\})/', $css, $animations_match, PREG_PATTERN_ORDER);
         foreach ($animations_match[1] as $a_m_k => $a_m_v) {
+            // 格式化代码
             $animations[$animations_match[2][$a_m_k]][] = self::formatCssBlock($a_m_v);
         }
 

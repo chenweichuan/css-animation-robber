@@ -66,12 +66,28 @@
             margin:10px;
             float: left;
         }
-        .preview-animation-item .preview-animation-element {
+        .preview-animation-item .preview-animation-area {
             width: 200px;
             height: 170px;
+            position: relative;
+        }
+        .preview-animation-item .preview-animation-area .preview-animation-element {
+            display: inline-block;
+            width: 170px;
+            height: 170px;
             line-height: 170px;
+            font-size: 1em;
             text-align: center;
             white-space:nowrap;
+            padding:0;
+            margin:0 auto;
+            background-position: center center;
+            position: absolute;
+            top:auto;
+            right: auto;
+            bottom: auto;
+            left: auto;
+            z-index: auto;
         }
         .preview-animation-item .preview-animation-code {
             width: 196px;
@@ -162,9 +178,9 @@
             var autoRefreshTimer,
                 fRefresh = function() {
                     stopAutoRefresh();
-                    $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).addClass( "hide" );
+                    $( "#preview" ).find( ".preview-animation-area > .not-infinite" ).css( "display", "none" );
                     setTimeout( function() {
-                        $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).removeClass( "hide" );
+                        $( "#preview" ).find( ".preview-animation-area > .not-infinite" ).css( "display", "inline-block" );
                         startAutoRefresh();
                     }, 100 );
                 },
