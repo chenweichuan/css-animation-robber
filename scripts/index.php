@@ -106,7 +106,7 @@
                 }, 100 );
             },
             initAutoRefresh = function() {
-                autoTimer = setInterval( function() {
+                autoRefreshTimer = setInterval( function() {
                     fRefresh();
                 }, 8000 );
             };
