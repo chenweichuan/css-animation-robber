@@ -20,11 +20,41 @@
         .clearfix:after {
             clear: both;
         }
+        .pull-left {
+            float: left;
+        }
         .hide {
             display: none;
         }
         .well > div {
             margin:10px;
+        }
+        .preview-url-form {
+            width: 100%;
+            height: 20px;
+        }
+        .preview-url-form .preview-field-url {
+            height: 100%;
+        }
+        .preview-url-form .preview-input-url {
+            width: 60%;
+            height: 100%;
+        }
+        .preview-url-form .preview-input-url input {
+            width: 100%;
+            height: 100%;
+            padding:0 5px;
+            margin:0 0 0 10px;
+            outline: none;
+        }
+        .preview-url-form .preview-submit-btn {
+            height: 100%;
+        }
+        .preview-url-form .preview-submit-btn input {
+            height: 100%;
+            padding:0;
+            margin:0 0 0 30px;
+            outline: none;
         }
         .preview-animation-item {
             margin:10px;
@@ -45,7 +75,7 @@
             border:none;
             overflow: hidden;
         }
-        .refresh-btn {
+        .preview-refresh-btn {
             position: fixed;
             top:50px;
             right:20px;
@@ -64,13 +94,13 @@
 
         <br/>
 
-        <div class="clearfix">
-            <label style="float:left;"><span style="color:red;">*</span>&nbsp;HTML5地址&nbsp;</label>
-            <div style="float:left;">
-                <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL" style="width:800px;"/>&nbsp;
+        <div class="clearfix preview-url-form">
+            <label class="pull-left preview-field-url"><span style="color:red;">*</span>&nbsp;HTML5地址</label>
+            <div class="pull-left preview-input-url">
+                <input id="url" type="text" name="url" value="http://m.jobtong.com/e/1024/power" placeholder="请输入HTML5 URL"/>
             </div>
-            <div style="float:left;">
-                <input class="js-submit-btn" type="button" value="提取CSS"/>&nbsp;
+            <div class="pull-left preview-submit-btn">
+                <input id="submit" type="button" value="提取CSS"/>
             </div>
         </div>
 
@@ -79,50 +109,77 @@
         <div id="preview" class="clearfix preview"></div>
     </div>
 
-    <input class="refresh-btn js-refresh-btn" type="button" value="重播动画"/>
+    <input class="preview-refresh-btn js-refresh-btn" type="button" value="刷新动画"/>
 
     <script>
-        $( ".js-submit-btn" ).click( function() {
-            var $btn  = $( this ),
-                btnText = $btn.val(),
-                loadingText = "分析提取ing...",
-                url = $( "#url" ).val();
-            $btn.attr( "disabled", true ).val( loadingText );
-            url ? $.getJSON( "rob.php", { url: url }, function( res ) {
-                if ( res.status ) {
-                    $( "#preview" ).html( res.info );
-                } else {
-                    alert( "抓取失败，请稍后重试~" );
+        ! function() {
+            // set url to hash
+            function setUrlToHash( url ) {
+                location.hash = encodeURIComponent( url );
+            }
+            // get url from hash
+            function getUrlFromHash() {
+                var href = location.href;
+                return -1 === href.indexOf( "#" ) ? "" : decodeURIComponent( href.split( "#" )[1] );
+            }
+            // get animations
+            function getHtml( url ) {
+                var $btn = $( "#submit" ),
+                    btnText = $btn.val(),
+                    loadingText = "分析提取ing...";
+                if ( $btn.attr( "disabled" ) ) {
+                    return ;
                 }
-                $btn.attr( "disabled", false ).val( btnText );
-            } ) : ( alert( "请输入HTML5地址" ), $btn.attr( "disabled", false ).val( btnText ) );
-        } );
-        var autoRefreshTimer,
-            fRefresh = function() {
-                stopAutoRefresh();
-                $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).addClass( "hide" );
+                $btn.attr( "disabled", true ).val( loadingText );
+                url && $.getJSON( "rob.php", { url: url }, function( res ) {
+                    if ( res.status ) {
+                        $( "#preview" ).html( res.info );
+                    } else {
+                        alert( "抓取失败，请稍后重试~" );
+                    }
+                    $btn.attr( "disabled", false ).val( btnText );
+                } );
+            }
+            // manual btn
+            $( "#submit" ).click( function() {
+                var url = $( "#url" ).val();
+                url ? ( getHtml( url ), setUrlToHash( url ) ) : alert( "请输入HTML5地址" );
+            } );
+            // hashchange
+            $( window ).bind( "hashchange", function() {
+                var url = getUrlFromHash();
+                url && ( getHtml( url ), $( "#url" ).val( url ) );
+            } ).trigger( "hashchange" );
+
+            // auto refresh not-infinite animation
+            var autoRefreshTimer,
+                fRefresh = function() {
+                    stopAutoRefresh();
+                    $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).addClass( "hide" );
+                    setTimeout( function() {
+                        $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).removeClass( "hide" );
+                        startAutoRefresh();
+                    }, 100 );
+                },
+                startAutoRefresh = function() {
+                    autoRefreshTimer = setTimeout( function() {
+                        fRefresh();
+                    }, 8000 );
+                },
+                stopAutoRefresh = function() {
+                    clearTimeout( autoRefreshTimer );
+                };
+            // manual refresh
+            $( ".js-refresh-btn" ).click( function() {
+                var $btn  = $( this );
+                $btn.attr( "disabled", true );
+                fRefresh();
                 setTimeout( function() {
-                    $( "#preview" ).find( ".preview-animation-element > .not-infinite" ).removeClass( "hide" );
-                    startAutoRefresh();
-                }, 100 );
-            },
-            startAutoRefresh = function() {
-                autoRefreshTimer = setTimeout( function() {
-                    fRefresh();
-                }, 8000 );
-            },
-            stopAutoRefresh = function() {
-                clearTimeout( autoRefreshTimer );
-            };
-        $( ".js-refresh-btn" ).click( function() {
-            var $btn  = $( this );
-            $btn.attr( "disabled", true );
-            fRefresh();
-            setTimeout( function() {
-                $btn.attr( "disabled", false );
-            }, 1000 );
-        } );
-        startAutoRefresh();
+                    $btn.attr( "disabled", false );
+                }, 1000 );
+            } );
+            startAutoRefresh();
+        } ();
     </script>
   </body>
 </html>
