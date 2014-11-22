@@ -120,7 +120,7 @@
             fRefresh();
             setTimeout( function() {
                 $btn.attr( "disabled", false );
-            }, 2000 );
+            }, 1000 );
         } );
         startAutoRefresh();
     </script>
