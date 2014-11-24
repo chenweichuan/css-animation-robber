@@ -12,15 +12,21 @@ class CssAnimationRobber
     const USER_AGENT_CHROME = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36';
     const USER_AGENT_IOS    = 'Mozilla/5.0 (iOS; U; zh-Hans) AppleWebKit/533.19.4 (KHTML, like Gecko) AdobeAIR/4.0';
 
+    const DEFAULT_NOTE = 'CSS动效提取器';
+
     public function getAnimationCss($url = NULL, $css_links = NULL, $html = NULL)
     {
         $url = (string) $url;
         $css_links = array_filter(is_array($css_links) ? $css_links : explode(',', str_replace("\n", ',', preg_replace('/\s/', '', (string) $css_links))));
         $html = (string) $html;
 
+        $note = self::DEFAULT_NOTE;
+
         $html .= $url ? self::getRemoteContents($url, self::USER_AGENT_IOS) : '';
         $style_areas = array();
         if ($html) {
+            preg_match_all('/<title[^<>]*>(.*?)<\/title>/i', $html, $head_match, PREG_PATTERN_ORDER);
+            $note .= ' - ' . (isset($head_match[1][0]) ? $head_match[1][0] : '');
             preg_match_all('/<link[^<>]+href=[\'"]([^<>\'"]+)[\'"][^<>]*>/i', $html, $css_links_match, PREG_PATTERN_ORDER);
             $css_links = array_merge($css_links, $css_links_match[1]);
         }
@@ -83,6 +89,7 @@ class CssAnimationRobber
         
 
         return array(
+            'note'       => $note,
             'keyframes'  => $keyframes,
             'animations' => $animations,
         );

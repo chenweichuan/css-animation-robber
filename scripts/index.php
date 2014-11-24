@@ -120,7 +120,7 @@
   <body>
 
     <div class="well">
-        <legend>CSS动效提取器</legend>
+        <legend id="note">CSS动效提取器</legend>
 
         <br/>
 
@@ -189,7 +189,9 @@
                 }
                 $.getJSON( "rob.php", data, function( res ) {
                     if ( res.status ) {
-                        $( "#preview" ).html( res.info );
+                        $( "title" ).html( res.info.note );
+                        $( "#note" ).html( res.info.note );
+                        $( "#preview" ).html( res.info.html );
                     } else {
                         alert( "抓取失败，请稍后重试~" );
                     }

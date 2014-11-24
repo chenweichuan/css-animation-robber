@@ -11,11 +11,15 @@ $html  = isset($_REQUEST['html']) ? (string) $_REQUEST['html'] : NULL;
 
 $css_animation_robber = new CssAnimationRobber();
 
-$preview_html = fetch('./_preview.tpl.php', $css_animation_robber->getAnimationCss($url, $css_links, $html));
+$animations_css = $css_animation_robber->getAnimationCss($url, $css_links, $html);
+$preview_html = fetch('./_preview.tpl.php', $animations_css);
 
 $return = array();
 $return['status'] = 1;
-$return['info']   = $preview_html;
+$return['info']   = array(
+    'note' => $animations_css['note'],
+    'html' => $preview_html,
+);
 echo json_encode($return);
 
 function fetch($tpl, $params = array())
