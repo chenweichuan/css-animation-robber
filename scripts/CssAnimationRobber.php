@@ -15,7 +15,7 @@ class CssAnimationRobber
     public function getAnimationCss($url = NULL, $css_links = NULL, $html = NULL)
     {
         $url = (string) $url;
-        $css_links = array_filter(is_array($css_links) ? $css_links : explode(',', preg_replace('/\s/', '', (string) $css_links)));
+        $css_links = array_filter(is_array($css_links) ? $css_links : explode(',', str_replace("\n", ',', preg_replace('/\s/', '', (string) $css_links))));
         $html = (string) $html;
 
         $html .= $url ? self::getRemoteContents($url, self::USER_AGENT_IOS) : '';

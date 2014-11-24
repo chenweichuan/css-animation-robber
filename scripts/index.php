@@ -134,11 +134,11 @@
             <div class="pull-left preview-input preview-input-css-links">
                 <input id="css-links" type="text" name="css_links" value="" placeholder="请输入CSS URL" autocomplete="on"/>
             </div>
-            <!-- <div class="clearfix"></div>
+            <div class="clearfix"></div>
             <label class="pull-left preview-field preview-field-html">&nbsp;含CSS 的HTML</label>
             <div class="pull-left preview-input preview-input-html">
                 <textarea id="html" name="html" placeholder="请输入HTML" autocomplete="off"></textarea>
-            </div> -->
+            </div>
             <div class="pull-left preview-submit-btn">
                 <input id="submit" type="button" value="提取CSS"/>
             </div>
@@ -154,31 +154,40 @@
     <script>
         ! function() {
             // set url to hash
-            function setUrlToHash( url ) {
-                location.hash = encodeURIComponent( url );
+            function setDataToHash( data ) {
+                data = data || {};
+                location.hash = "url=" + encodeURIComponent( data.url || "" ) + "&cssLinks=" + encodeURIComponent( data.cssLinks || "" ) + "&html=" + encodeURIComponent( data.html || "" );
             }
             // get url from hash
-            function getUrlFromHash() {
-                var href = location.href;
-                return -1 === href.indexOf( "#" ) ? "" : decodeURIComponent( href.split( "#" )[1] );
+            function getDataFromHash() {
+                var href = location.href,
+                    hash = href.split( "#" )[1] || "",
+                    data = {
+                        url: decodeURIComponent( hash.match( /url=([^&]*)/ )[1] || "" ),
+                        cssLinks: decodeURIComponent( hash.match( /cssLinks=([^&]*)/ )[1] || "" ),
+                        html: decodeURIComponent( hash.match( /html=([^&]*)/ )[1] || "" )
+                    };
+                return data;
             }
             // get animations
             function getHtml() {
                 var $btn = $( "#submit" ),
                     btnText = $btn.val(),
                     loadingText = "分析提取ing...",
-                    url = ( $( "#url" ).val() || "" ).replace( /^\s+|\s+$/, "" ),
-                    cssLinks = ( $( "#css-links" ).val() || "" ).replace( /^\s+|\s+$/, "" ),
-                    html = ( $( "#html" ).val() || "" ).replace( /^\s+|\s+$/, "" );
+                    data = {
+                        url: ( $( "#url" ).val() || "" ).replace( /^\s+|\s+$/, "" ),
+                        cssLinks: ( $( "#css-links" ).val() || "" ).replace( /^\s+|\s+$/, "" ),
+                        html: ( $( "#html" ).val() || "" ).replace( /^\s+|\s+$/, "" )
+                    }
                 if ( $btn.attr( "disabled" ) ) {
                     return ;
                 }
                 $btn.attr( "disabled", true ).val( loadingText );
-                if (! url && ! cssLinks && ! html) {
+                if (! data.url && ! data.cssLinks && ! data.html) {
                     alert( "请填写要抓取的内容" );
                     return;
                 }
-                $.getJSON( "rob.php", { url: url, css_links: cssLinks, html: html }, function( res ) {
+                $.getJSON( "rob.php", data, function( res ) {
                     if ( res.status ) {
                         $( "#preview" ).html( res.info );
                     } else {
@@ -189,14 +198,18 @@
             }
             // manual btn
             $( "#submit" ).click( function() {
-                var url = $( "#url" ).val();
-                url && setUrlToHash( url );
+                var data = {
+                        url: $( "#url" ).val(),
+                        cssLinks: $( "#css-links" ).val(),
+                        html: $( "#html" ).val()
+                    };
+                ( data.url || data.cssLinks || data.html ) && setDataToHash( data );
                 getHtml();
             } );
             // hashchange
             $( window ).bind( "hashchange", function() {
-                var url = getUrlFromHash();
-                url && ( $( "#url" ).val( url ), getHtml() );
+                var data = getDataFromHash();
+                ( data.url || data.cssLinks || data.html ) && ( $( "#url" ).val( data.url ), $( "#css-links" ).val( data.cssLinks ), $( "#html" ).val( data.html ), getHtml() );
             } ).trigger( "hashchange" );
 
             // auto refresh not-infinite animation
