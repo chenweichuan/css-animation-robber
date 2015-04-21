@@ -40,6 +40,8 @@ class CssAnimationRobber
             $_url = $c_l_v;
             if (0 === strpos($_url, 'http://')) {
                 // do nothing
+            } else if (0 === strpos($_url, '//')) {
+                $_url = substr($url, 0, strpos($url, ':') + 1) . $_url;
             } else if (0 === strpos($_url, '/')) {
                 $_url = substr($url, 0, strpos($url, '/', 7)) . $_url;
             } else {
@@ -101,9 +103,6 @@ class CssAnimationRobber
         $css .= "{\n";
         $css .= strpos($keyframes_blocks[0], 'opacity') ? "    opacity: 0;\n" : "";
         $css .= "    -webkit-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
-        $css .= "    -moz-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
-        $css .= "    -moz-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
-        $css .= "    -o-animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
         $css .= "    animation: {$keyframes_name} 1s infinite 0.3s ease-in-out;\n";
         $css .= "}\n\n";
 
