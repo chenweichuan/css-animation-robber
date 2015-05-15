@@ -163,9 +163,9 @@
                 var href = location.href,
                     hash = href.split( "#" )[1] || "",
                     data = {
-                        url: decodeURIComponent( ( hash.match( /url=([^&]*)/ ) || [] )[1] || "" ),
-                        cssLinks: decodeURIComponent( ( hash.match( /cssLinks=([^&]*)/ ) || [] )[1] || "" ),
-                        html: decodeURIComponent( ( hash.match( /html=([^&]*)/ ) || [] )[1] || "" )
+                        url: decodeURIComponent( ( ( hash.match( /url=([^&]*)/ ) || [] )[1] || "" ).replace( "+", "%20" ) ),
+                        cssLinks: decodeURIComponent( ( ( hash.match( /cssLinks=([^&]*)/ ) || [] )[1] || "" ).replace( "+", "%20" ) ),
+                        html: decodeURIComponent( ( ( hash.match( /html=([^&]*)/ ) || [] )[1] || "" ).replace( "+", "%20" ) )
                     };
                 return data;
             }
