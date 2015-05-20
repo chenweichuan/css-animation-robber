@@ -2,7 +2,7 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
-    <title>CSS动效提取器</title>
+    <title>CSS动效提取器-CSS3-HTML5-幻灯片</title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="keywords" content="" />
     <meta name="description" content="" />
