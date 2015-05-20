@@ -157,7 +157,7 @@ class CssAnimationRobber
             if ($html) {
                 preg_match_all('/charset[ =][\'"]?([\w\-]+)[\'"]?/i', $html, $charset_match, PREG_PATTERN_ORDER);
                 $charset = strtoupper(isset($charset_match[1][0]) ? $charset_match[1][0] : '');
-                $charset && (false === strpos($charset, 'UTF')) && ($html = mb_convert_encoding($html, 'UTF-8', $charset));
+                $charset && (false === strpos($charset, 'UTF')) && ($html = iconv($charset . '//IGNORE', 'UTF-8', $html));
                 break;
             }
         }
