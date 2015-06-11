@@ -94,15 +94,25 @@
             right: 0;
             bottom: auto;
             left: 0;
-            z-index: auto;
+            z-index: 99;
         }
         .preview-animation-item .preview-animation-code {
+            position: relative;
             width: 196px;
             height:68px;
             margin:0 2px;
             padding:0;
             border:none;
+            outline:none;
+            -webkit-box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            box-sizing:border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: rgba(255, 255, 255, .8);
             overflow: hidden;
+            z-index: 999;
         }
         .preview-refresh-btn {
             color: #dd0000;
