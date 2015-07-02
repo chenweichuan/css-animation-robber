@@ -38,7 +38,7 @@ class CssAnimationRobber
         }
         foreach ($css_links as $c_l_v) {
             $_url = $c_l_v;
-            if (0 === strpos($_url, 'http://')) {
+            if ((0 === strpos($_url, 'http://')) || (0 === strpos($_url, 'https://'))) {
                 // do nothing
             } else if (0 === strpos($_url, '//')) {
                 $_url = substr($url, 0, strpos($url, ':') + 1) . $_url;
